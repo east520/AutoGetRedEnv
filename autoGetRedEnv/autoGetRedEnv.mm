@@ -22,6 +22,27 @@ static int const kCloseRedEnvPluginForMyselfFromChatroom = 3;
 //3: 不抢群里自己发的红包
 static int HBPliginType = 0;
 
+#define SAVESETTINGS(key, value) { \
+NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES); \
+NSString *docDir = [paths objectAtIndex:0]; \
+if (!docDir){ return;} \
+NSMutableDictionary *dict = [NSMutableDictionary dictionary]; \
+NSString *path = [docDir stringByAppendingPathComponent:@"HBPluginSettings.txt"]; \
+[dict setObject:value forKey:key]; \
+[dict writeToFile:path atomically:YES]; \
+}
+
+//#define LOADSETTINGS(key) ({ \
+//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES); \
+//NSString *docDir = [paths objectAtIndex:0]; \
+//if (!docDir){ return} \
+//NSString *path = [docDir stringByAppendingPathComponent:@"HBPluginSettings.txt"]; \
+//NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:path]; \
+//if(!dict){ return} \
+//NSNumber *number = [dict objectForKey:key]; \
+//0
+//})
+
 CHDeclareClass(CMessageMgr);
 
 CHMethod(2, void, CMessageMgr, AsyncOnAddMsg, id, arg1, MsgWrap, id, arg2)
@@ -81,6 +102,8 @@ CHMethod(2, void, CMessageMgr, AsyncOnAddMsg, id, arg1, MsgWrap, id, arg2)
                 {
                     HBPliginType = kCloseRedEnvPluginForMyselfFromChatroom;
                 }
+                
+                SAVESETTINGS(@"HBPliginType", [NSNumber numberWithInt:HBPliginType]);
             }
         }
             break;
